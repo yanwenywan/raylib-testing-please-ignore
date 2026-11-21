@@ -1,38 +1,22 @@
 #include "raylib.h"
 #include "stb_ds.h"
+#include "dots.h"
 #include <stdint.h>
 
-typedef struct Dot {
-    Vector2 pos;
-    Color colour;
-} Dot;
-
 int main(void) {
-    InitWindow(800, 450, "Raylib test window");
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    InitWindow(1600, 1000, "Raylib test window");
     SetTargetFPS(60);
 
-    Dot* dots = NULL;
+    Dots dotsScreen;
+    Dots_init(&dotsScreen);
 
     while (!WindowShouldClose()) {
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-            Dot dot = { GetMousePosition(), ColorFromHSV((float)(arrlen(dots) % 360), 0.8f, 0.9f) };
-            arrput(dots, dot);
-        }
-
-        if (IsKeyPressed(KEY_C)) {
-            arrclear(dots);
-        }
-
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-        for (int i = 0; i < arrlen(dots); i++) {
-            DrawCircleV(dots[i].pos, 4, dots[i].colour);
-        }
-        DrawText(TextFormat("dots: %d  (C to clear)", (int)arrlen(dots)), 10, 10, 20, DARKGRAY);
-        EndDrawing();
+        Dots_update(&dotsScreen);
+        Dots_draw(&dotsScreen);
     }
 
-    arrfree(dots);
+    Dots_unload(&dotsScreen);
     CloseWindow();
     return 0;
 }
