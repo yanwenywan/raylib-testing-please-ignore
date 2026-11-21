@@ -16,13 +16,16 @@ BUILD      := build
 RAYLIB_SRC := vendor/raylib/src
 RAYLIB_OUT := $(BUILD)/raylib
 RAYLIB_LIB := $(RAYLIB_OUT)/libraylib.a
+ 
+# recursive wildcard: $(call rwildcard,dir/,pattern)
+rwildcard = $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 
-SRCS := $(wildcard $(SRC_DIR)/*.c)
+SRCS := $(call rwildcard,$(SRC_DIR),*.c)
 OBJS := $(SRCS:$(SRC_DIR)/%.c=$(BUILD)/obj/%.o)
 DEPS := $(OBJS:.o=.d)
 
 # IMPORTANT: for zed to see the libs add them to compile_flags.txt
-CFLAGS := -std=c2x -Wall -Wextra -g -I$(RAYLIB_SRC) -Ivendor/stb -MMD -MP
+CFLAGS := -std=c2x -Wall -Wextra -g -I$(SRC_DIR) -I$(RAYLIB_SRC) -Ivendor/stb -MMD -MP
 
 ifeq ($(PLATFORM_OS),WINDOWS)
     CC     := gcc

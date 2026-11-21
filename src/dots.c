@@ -1,4 +1,5 @@
 #include "dots.h"
+#include "constants.h"
 #include "raylib.h"
 #include "raymath.h"
 #include "stb_ds.h"
@@ -11,18 +12,15 @@ static const int WORLD_HEIGHT = 1000;
 void Dots_init(Dots *this) {
     *this = (Dots){ 0 };
     
-    this->camera = (Camera2D){ 
-        (Vector2){0, 0},
-        (Vector2){0, 0},
-        0.0f,
-        1.0f
-    };
-    this->camera.zoom = calculateScreenZoom(WORLD_WIDTH, WORLD_HEIGHT);
+    this->camera = initialiseScaledCamera(WORLD_WIDTH, WORLD_HEIGHT);
 }
 
 void Dots_update(Dots *this) {
     if (IsWindowResized()) {
         this->camera.zoom = calculateScreenZoom(WORLD_WIDTH, WORLD_HEIGHT);
+    }
+    if (IsKeyPressed(KEY_ESCAPE)) {
+        changeScreen(MENU_SCREEN);
     }
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
