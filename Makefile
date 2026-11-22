@@ -7,11 +7,12 @@ else
         PLATFORM_OS := OSX
     else
         PLATFORM_OS := LINUX
-	endif
+    endif
 endif
 
 TARGET     := game
 SRC_DIR    := src
+ASSETS	   := assets
 BUILD      := build
 RAYLIB_SRC := vendor/raylib/src
 RAYLIB_OUT := $(BUILD)/raylib
@@ -41,9 +42,9 @@ endif
 
 BIN := $(BUILD)/$(TARGET)$(EXE)
 
-.PHONY: all run clean distclean
+.PHONY: all run clean distclean assets dist
 
-all: $(BIN)
+all: $(BIN) assets
 
 $(BIN): $(OBJS) $(RAYLIB_LIB)
 	$(CC) $(OBJS) $(RAYLIB_LIB) $(LDLIBS) -o $@
@@ -56,8 +57,12 @@ $(RAYLIB_LIB):
 	@mkdir -p $(RAYLIB_OUT)
 	$(MAKE) -C $(RAYLIB_SRC) PLATFORM=PLATFORM_DESKTOP RAYLIB_RELEASE_PATH=$(abspath $(RAYLIB_OUT))
 
-run: $(BIN)
-	./$(BIN)
+assets:
+	@mkdir -p $(BUILD)/assets
+	cp -R $(ASSETS)/. $(BUILD)/assets/
+	
+run: all
+	cd $(BUILD) && ./$(TARGET)$(EXE)
 
 # clean only your code; distclean also rebuilds raylib next time
 clean:
@@ -67,20 +72,24 @@ distclean:
 	rm -rf $(BUILD)
 	$(MAKE) -C $(RAYLIB_SRC) clean
 
+dist:
+	cd $(BUILD) && zip -r ../$(TARGET)-$(PLATFORM_OS).zip $(TARGET)$(EXE) assets
+	
 -include $(DEPS)
 
 # ------------------------------------------------------------------
 # Targets
 # ------------------------------------------------------------------
-# make            Build the game (same as `make all`). Builds raylib first if build/raylib/libraylib.a is missing.
-# make run        Build if needed, then run the game.
-# make clean      Remove your object files and the executable. Keeps the compiled raylib, so the next build is fast.
-# make distclean  Remove all of build/ (including libraylib.a) and run raylib's own clean in vendor/raylib/src. The next build recompiles raylib.
+# make            Build the game and copy assets/ into build/
+# make run        Build, then run the game
+# make assets     Copy assets/ into build/assets/
+# make dist       Build, then zip the game and assets into game-<OS>.zip
+# make clean      Remove your object files and the executable (keeps compiled raylib)
+# make distclean  Remove build/ and the zip, and clean raylib (next build recompiles raylib)
 #
-# Never touched by any target: vendor/raylib (the submodule source) and vendor/stb.
+# RELEASE=1       Optimised build, e.g. `make dist RELEASE=1`. Run `make clean` when switching.
 #
 # Notes
-# - The OS is detected automatically (Linux / macOS / Windows via MSYS2 or w64devkit). On Windows, run make from that shell, not cmd.exe.
-# - Header changes trigger rebuilds of the files that include them (via -MMD -MP and the generated .d files).
-# - To upgrade raylib: git -C vendor/raylib fetch --tags && git -C vendor/raylib checkout 6.2, then make distclean && make
+# - On Windows, run make in the MinGW shell (MSYS2 / w64devkit)
+# - Upgrade raylib: git -C vendor/raylib fetch --tags && git -C vendor/raylib checkout 6.2, then make distclean && make
 # ------------------------------------------------------------------

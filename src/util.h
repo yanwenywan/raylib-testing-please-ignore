@@ -13,11 +13,14 @@ float calculateScreenZoom(int worldWidth, int worldHeight);
  */
 Camera2D initialiseScaledCamera(int worldWidth, int worldHeight); 
 
-void checkResizeCamera(Camera2D* camera); 
-
 /**
  * Gets the mouse position and convert it to world coordinates
  */
 Vector2 getMousePosWorld(Camera2D camera); 
+
+/**
+ * Gets the mouse (screen) position as (x, GetScreenHeight-y), suitable for passing into opengl
+ */
+Vector2 getMousePositionInvertedY();
 
 

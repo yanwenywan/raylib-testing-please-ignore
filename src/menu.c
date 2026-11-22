@@ -12,6 +12,7 @@ static Camera2D camera;
 static SimpleButton* buttonArrayList;
 
 void switchToDotsScreen();
+void switchToShaderScreen();
 
 void Menu_init() {
     camera = initialiseScaledCamera(WORLD_WIDTH, WORLD_HEIGHT);
@@ -20,7 +21,13 @@ void Menu_init() {
         (Rectangle){40, 100, 300, 120}, 
         &switchToDotsScreen, 
         PURPLE, RED, 
-        makeTextSimple("Dots", 50, 110, 30, WHITE)
+        makeSimpleText("Dots", 50, 110, 30, WHITE)
+    ));
+    arrput(buttonArrayList, makeSimpleButton(
+        (Rectangle){360, 100, 300, 120}, 
+        &switchToShaderScreen, 
+        BLUE, RED, 
+        makeSimpleText("Frag shader thing", 370, 110, 30, WHITE)
     ));
 }
 
@@ -55,4 +62,8 @@ void Menu_unload() {
 
 void switchToDotsScreen() {
     changeScreen(DOTS_SCREEN);
+}
+
+void switchToShaderScreen() {
+    changeScreen(SHADER_SCREEN);
 }

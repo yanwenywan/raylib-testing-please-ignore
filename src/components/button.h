@@ -8,7 +8,7 @@ typedef enum {
 /**
  * All the information needed to draw a text using raylib defaults
  */
-typedef struct {
+typedef struct SimpleText {
     int posX;
     int posY;
     int fontSize;
@@ -20,7 +20,7 @@ typedef struct {
  * Simple press button drawn using primitives
  * Assumes world space
  */
-typedef struct {
+typedef struct SimpleButton {
     Rectangle rect;
     Color offColor;
     Color pressedColor;
@@ -29,9 +29,14 @@ typedef struct {
     ButtonState state;
 } SimpleButton;
 
-SimpleText makeTextSimple(char* text, int posX, int posY, int fontSize, Color color);
+SimpleText makeSimpleText(char* text, int posX, int posY, int fontSize, Color color);
 
 SimpleButton makeSimpleButton(Rectangle rect, void (*action)(), Color offColor, Color pressedColor, SimpleText label);
+
+// Text specific
+
+/** Quick way to call a drawtext command */
+void SimpleText_draw(SimpleText* this); 
 
 // button specific
 

@@ -1,7 +1,7 @@
 #include "button.h"
 #include "raylib.h"
 
-SimpleText makeTextSimple(char *text, int posX, int posY, int fontSize, Color color) {
+SimpleText makeSimpleText(char *text, int posX, int posY, int fontSize, Color color) {
     SimpleText out = { posX, posY, fontSize, color, text };
     return out;
 }
@@ -9,6 +9,10 @@ SimpleText makeTextSimple(char *text, int posX, int posY, int fontSize, Color co
 SimpleButton makeSimpleButton(Rectangle rect, void (*action)(void), Color offColor, Color pressedColor, SimpleText label) {
     SimpleButton out = { rect, offColor, pressedColor, label, action, B_NONE };
     return out;
+}
+
+void SimpleText_draw(SimpleText *this) {
+    DrawText(this->text, this->posX, this->posY, this->fontSize, this->color);
 }
 
 void Button_update(SimpleButton *this, Camera2D camera) {

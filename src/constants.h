@@ -7,7 +7,8 @@
  */
 typedef enum Screen {
     MENU_SCREEN = 0,
-    DOTS_SCREEN
+    DOTS_SCREEN,
+    SHADER_SCREEN
 } Screen ;
 
 /**

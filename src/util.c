@@ -9,7 +9,8 @@ float calculateScreenZoom(int worldWidth, int worldHeight) {
     float widthRatio = (float)screenWidth / (float)worldWidth;
     float heightRatio = (float)screenHeight / (float)worldHeight;
 
-    return fminf(widthRatio, heightRatio);
+    // return fminf(widthRatio, heightRatio);
+    return fmaxf(widthRatio, heightRatio);
 }
 
 Camera2D initialiseScaledCamera(int worldWidth, int worldHeight) {
@@ -26,4 +27,10 @@ Vector2 getMousePosWorld(Camera2D camera) {
     Vector2 mouseScreenPos = GetMousePosition();
     Vector2 mouseWorldPos = GetScreenToWorld2D(mouseScreenPos, camera);
     return mouseWorldPos;
+}
+
+Vector2 getMousePositionInvertedY() {
+    Vector2 mousePos = GetMousePosition();
+    mousePos.y = GetScreenHeight() - mousePos.y;
+    return mousePos;
 }
