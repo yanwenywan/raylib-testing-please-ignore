@@ -34,3 +34,7 @@ Vector2 getMousePositionInvertedY() {
     mousePos.y = GetScreenHeight() - mousePos.y;
     return mousePos;
 }
+
+Vector2 getScreenSize() {
+    return (Vector2){(float)GetScreenWidth(), (float)GetScreenHeight()};
+}

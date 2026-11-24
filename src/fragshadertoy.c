@@ -5,6 +5,16 @@
 #include "util.h"
 #include "fragshadertoy.h"
 
+// c23 embed directive allows placing data into source directly
+// doesn't null terminate so suffix(, 0) is needed afterwards (or , 0 on new line)
+// to make it a proper string
+static const char FRAG_PIXELISER[] = {
+#embed "shaders/pixeliser.fsh" suffix(, 0)
+};
+static const char FRAG_TORCH[] = {
+#embed "shaders/torch.fsh" suffix(, 0)
+};
+
 typedef struct {
     bool showGuide;
     bool killed;  // stop updates so everything can unload
@@ -45,21 +55,25 @@ void FragShaderToy_init() {
     renderTarget = LoadRenderTexture(WORLD_WIDTH, WORLD_HEIGHT);
 
     arrpush(shaders, LoadShaderFromMemory(nullptr, nullptr));  // default shader
-    arrpush(shaders, LoadShader(nullptr, "assets/shaders/pixeliser.fsh"));  // pixelise shader from raylib
-    arrpush(shaders, LoadShader(nullptr, "assets/shaders/torch.fsh"));  // light around the mouse 
+    arrpush(shaders, LoadShaderFromMemory(nullptr, FRAG_PIXELISER));  // pixelise shader from raylib
+    arrpush(shaders, LoadShaderFromMemory(nullptr, FRAG_TORCH));  // light around the mouse
 
     torchShaderMouseLoc = GetShaderLocation(shaders[2], "mousePos");
     torchShaderResolutionLoc = GetShaderLocation(shaders[2], "resolution");
 
     // sets shader values that dont have to be set every frame
-    SetShaderValue(shaders[2], torchShaderResolutionLoc, (void*)&(Vector2){GetScreenWidth(), GetScreenHeight()}, SHADER_UNIFORM_VEC2);
+    Vector2 screenSize = getScreenSize();
+    SetShaderValue(shaders[2], torchShaderResolutionLoc, 
+        (void*)&screenSize,  SHADER_UNIFORM_VEC2);
 }
 
-void FragShaderToy_update(float dt) {
+void FragShaderToy_update([[maybe_unused]] float dt) {
     // not using dt
     if (IsWindowResized()) {
         state.camera.zoom = calculateScreenZoom(WORLD_WIDTH, WORLD_HEIGHT);
-        SetShaderValue(shaders[2], torchShaderResolutionLoc, (void*)&(Vector2){GetScreenWidth(), GetScreenHeight()}, SHADER_UNIFORM_VEC2);
+        Vector2 screenSize = getScreenSize();
+        SetShaderValue(shaders[2], torchShaderResolutionLoc, 
+            (void*)&screenSize, SHADER_UNIFORM_VEC2);
     }
     if (IsKeyPressed(KEY_ESCAPE)) {
         state.killed = true;
@@ -85,9 +99,8 @@ void FragShaderToy_update(float dt) {
 
     // set the mouse loc for shaders
     Vector2 mousePos = getMousePositionInvertedY();
-    // Vector2 mousePos = getMousePosWorld(state.camera);
-    // mousePos.y = WORLD_HEIGHT - mousePos.y;
-    SetShaderValue(shaders[2], torchShaderMouseLoc, (void*)&mousePos, SHADER_UNIFORM_VEC2);
+    SetShaderValue(shaders[2], torchShaderMouseLoc, 
+        (void*)&mousePos, SHADER_UNIFORM_VEC2);
 }
 
 void FragShaderToy_draw() {
@@ -104,7 +117,8 @@ void FragShaderToy_draw() {
     BeginMode2D(state.camera);
 
     BeginShaderMode(shaders[state.currentShader]);
-    DrawTextureRec(renderTarget.texture, (Rectangle){0, 0, WORLD_WIDTH, -WORLD_HEIGHT}, (Vector2){0,0}, WHITE);
+    DrawTextureRec(renderTarget.texture, 
+        (Rectangle){0, 0, WORLD_WIDTH, -WORLD_HEIGHT}, (Vector2){0,0}, WHITE);
     EndShaderMode();
     
     if (state.showGuide) {

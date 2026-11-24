@@ -32,8 +32,11 @@ void Dots_update(Dots *this) {
 
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         // if equal to last, do not create
-        if (arrlen(this->dots) == 0 || !Vector2Equals(getMousePosWorld(this->camera), arrlast(this->dots).pos)) {
-            Dot dot = { getMousePosWorld(this->camera), ColorFromHSV((float)(arrlen(this->dots) % 360), 0.8f, 0.9f) };
+        if (arrlen(this->dots) == 0 || 
+            !Vector2Equals(getMousePosWorld(this->camera), 
+                           arrlast(this->dots).pos)) {
+            Dot dot = { getMousePosWorld(this->camera), 
+                ColorFromHSV((float)(arrlen(this->dots) % 360), 0.8f, 0.9f) };
             arrput(this->dots, dot);
         }
     }
@@ -51,7 +54,8 @@ void Dots_draw(Dots *this) {
     for (int i = 0; i < arrlen(this->dots); i++) {
         DrawCircleV(this->dots[i].pos, 4, this->dots[i].colour);
     }
-    DrawText(TextFormat("dots: %d  (C to clear)", (int)arrlen(this->dots)), 10, 10, 20, DARKGRAY);
+    DrawText(TextFormat("dots: %d  (C to clear)", 
+        (int)arrlen(this->dots)), 10, 10, 20, DARKGRAY);
     EndMode2D();
     
     EndDrawing();

@@ -31,7 +31,8 @@ typedef struct SimpleButton {
 
 SimpleText makeSimpleText(char* text, int posX, int posY, int fontSize, Color color);
 
-SimpleButton makeSimpleButton(Rectangle rect, void (*action)(), Color offColor, Color pressedColor, SimpleText label);
+SimpleButton makeSimpleButton(Rectangle rect, void (*action)(), Color offColor, 
+                              Color pressedColor, SimpleText label);
 
 // Text specific
 

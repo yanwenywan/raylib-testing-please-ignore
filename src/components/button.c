@@ -1,12 +1,15 @@
 #include "button.h"
 #include "raylib.h"
 
-SimpleText makeSimpleText(char *text, int posX, int posY, int fontSize, Color color) {
+SimpleText makeSimpleText(char *text, int posX, int posY, 
+                          int fontSize, Color color) {
     SimpleText out = { posX, posY, fontSize, color, text };
     return out;
 }
 
-SimpleButton makeSimpleButton(Rectangle rect, void (*action)(void), Color offColor, Color pressedColor, SimpleText label) {
+SimpleButton makeSimpleButton(Rectangle rect, void (*action)(void), 
+                              Color offColor, Color pressedColor, 
+                              SimpleText label) {
     SimpleButton out = { rect, offColor, pressedColor, label, action, B_NONE };
     return out;
 }

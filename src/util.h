@@ -19,8 +19,13 @@ Camera2D initialiseScaledCamera(int worldWidth, int worldHeight);
 Vector2 getMousePosWorld(Camera2D camera); 
 
 /**
- * Gets the mouse (screen) position as (x, GetScreenHeight-y), suitable for passing into opengl
+ * Gets the mouse (screen) position as (x, GetScreenHeight-y), 
+ * suitable for passing into opengl
  */
 Vector2 getMousePositionInvertedY();
 
+/**
+ * Gets the screen width/height as a vec2
+ */
+Vector2 getScreenSize();
 

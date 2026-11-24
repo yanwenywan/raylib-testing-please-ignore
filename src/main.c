@@ -20,7 +20,8 @@ int main(void) {
         ChangeDirectory("../Resources");  // macos bundled application
     } 
     if (!DirectoryExists("assets")) {
-        TraceLog(LOG_FATAL, "Failed to find assets folder in %s, exiting.", GetWorkingDirectory());
+        TraceLog(LOG_FATAL, "Failed to find assets folder in %s, exiting.", 
+            GetWorkingDirectory());
         return 1;
     }
     
